@@ -21,8 +21,7 @@ class NoteController(private val repository: NoteRepository) {
         val id: String?,
         val title: String,
         val content: String,
-        val color: Long,
-        val ownerId: String          // was missing entirely or misspelled
+        val color: Long
     )
 
     data class NoteResponse(
@@ -41,7 +40,7 @@ class NoteController(private val repository: NoteRepository) {
                 content = body.content,
                 color = body.color,
                 createdAt = Instant.now(),
-                ownerId = ObjectId(body.ownerId)  // was body.owenerId
+                ownerId = ObjectId()
             )
         )
         return note.toResponse()
@@ -54,6 +53,11 @@ class NoteController(private val repository: NoteRepository) {
         return repository.findByOwnerId(ObjectId(ownerId)).map {
             it.toResponse()
         }
+    }
+
+    @DeleteMapping(path = ["/{id}"])
+    fun deleteByOwnerId(@PathVariable id: String) {
+        repository.deleteById(ObjectId(id))
     }
 }
 
