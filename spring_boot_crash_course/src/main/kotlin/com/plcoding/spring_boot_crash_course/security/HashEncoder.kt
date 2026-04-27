@@ -9,7 +9,7 @@ class HashEncoder {
 
     fun encode(raw: String): String? = bcrypt.encode(raw)
 
-    fun matches(raw: String, hash: String): Boolean = bcrypt.matches(raw, hash)
+    fun matches(raw: String, hash: String?): Boolean = bcrypt.matches(raw, hash)
 
 
 }
