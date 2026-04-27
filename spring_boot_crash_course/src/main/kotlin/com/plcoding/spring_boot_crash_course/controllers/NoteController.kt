@@ -15,7 +15,10 @@ import java.time.Instant
 
 @RestController
 @RequestMapping("/notes")
-class NoteController(private val repository: NoteRepository) {
+class NoteController(
+    private val repository: NoteRepository,
+    private val noteRepository: NoteRepository
+) {
 
     data class NoteRequest(
         val id: String?,
@@ -33,23 +36,23 @@ class NoteController(private val repository: NoteRepository) {
     )
 
     @PostMapping
-    fun save(@RequestBody @Valid body: NoteRequest): NoteResponse {  // added @RequestBody
+    fun save(@RequestBody @Valid body: NoteRequest): NoteResponse {
+        val ownerId = SecurityContextHolder.getContext().authentication?.principal as String
         val note = repository.save(
             Note(
                 title = body.title,
                 content = body.content,
                 color = body.color,
                 createdAt = Instant.now(),
-                ownerId = ObjectId()
+                ownerId = ObjectId(ownerId)
             )
         )
         return note.toResponse()
     }
 
     @GetMapping  // was @getMapping
-    fun findByOwnerId(
-        @RequestParam(required = true) ownerId: String,
-    ): List<NoteResponse> {
+    fun findByOwnerId(): List<NoteResponse> {
+        val ownerId = SecurityContextHolder.getContext().authentication?.principal as String
         return repository.findByOwnerId(ObjectId(ownerId)).map {
             it.toResponse()
         }
@@ -57,7 +60,14 @@ class NoteController(private val repository: NoteRepository) {
 
     @DeleteMapping(path = ["/{id}"])
     fun deleteByOwnerId(@PathVariable id: String) {
-        repository.deleteById(ObjectId(id))
+        val note = noteRepository.findById(ObjectId(id)).orElseThrow {
+            IllegalArgumentException("Note not found")
+        }
+        val ownerId = SecurityContextHolder.getContext().authentication?.principal as String
+        if(note.ownerId.toHexString() == ownerId) {
+            repository.deleteById(ObjectId(id))
+        }
+
     }
 }
 
