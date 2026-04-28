@@ -24,6 +24,10 @@ class AuthService(
         val refreshToken: String
     )
     fun register(email: String, password: String): User {
+        val user = userRepository.findByEmail(email.trim())
+        if(user != null) {
+            throw BadCredentialsException("User already exists")
+        }
         return userRepository.save(
             User(
                 email = email,
