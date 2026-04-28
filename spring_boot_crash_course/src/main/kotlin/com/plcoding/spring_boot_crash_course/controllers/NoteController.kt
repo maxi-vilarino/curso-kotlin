@@ -38,6 +38,8 @@ class NoteController(
     @PostMapping
     fun save(@RequestBody @Valid body: NoteRequest): NoteResponse {
         val ownerId = SecurityContextHolder.getContext().authentication?.principal as String
+        println("DEBUG - ownerId in controller: '$ownerId'")  // ← y esto
+        println("DEBUG - ownerId length: ${ownerId.length}")
         val note = repository.save(
             Note(
                 title = body.title,

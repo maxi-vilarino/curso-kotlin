@@ -43,7 +43,9 @@ class JwtService(
 
     fun validateAccessToken(token: String): Boolean {
         val claims = parseAllClaims(token) ?: return false
+        println("DEBUG - claims: $claims")  // ← qué devuelve parseAllClaims
         val tokenType = claims["type"] as? String ?: return false
+        println("DEBUG - tokenType: $tokenType")  // ← qué tipo tiene el token
         return tokenType == "access"
     }
 
