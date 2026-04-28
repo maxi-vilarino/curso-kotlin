@@ -22,6 +22,7 @@ class NoteController(
 
     data class NoteRequest(
         val id: String?,
+        @field:NotBlank(message = "Title can´t be black")
         val title: String,
         val content: String,
         val color: Long
@@ -36,7 +37,7 @@ class NoteController(
     )
 
     @PostMapping
-    fun save(@RequestBody @Valid body: NoteRequest): NoteResponse {
+    fun save(@Valid @RequestBody body: NoteRequest): NoteResponse {
         val ownerId = SecurityContextHolder.getContext().authentication?.principal as String
         println("DEBUG - ownerId in controller: '$ownerId'")  // ← y esto
         println("DEBUG - ownerId length: ${ownerId.length}")
