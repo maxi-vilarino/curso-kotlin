@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: spring-boot-basics-kotlin
+
+quotes:
+  search:
+    ignore-case: true
+    min-length: 3
+  validation:
+    min-content-legth: 5
+    max-content-length: 500
+    require-author: true
+    allowed-categories:
+      - "motivational"
+      - "funny"
+      - "tech"
+      - "wisdom"

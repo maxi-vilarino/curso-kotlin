@@ -3,14 +3,19 @@ package com.mvfcoding.spring_boot_basics_kotlin.service
 import com.mvfcoding.spring_boot_basics_kotlin.QuoteDto
 import com.mvfcoding.spring_boot_basics_kotlin.QuoteNotFoundException
 import com.mvfcoding.spring_boot_basics_kotlin.repository.QuotesRepository
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
 @Service
 class QuotesService(
     private val quotesRepository: QuotesRepository,
-    private val restTemplate: RestTemplate
+    @param:Value($$"${spring.application.version}")
+    private val version: String
 ) {
+    init {
+        println("Spring Boot backend running wit version $version")
+    }
     fun getQuotes(query: String?): List<QuoteDto> {
         return quotesRepository.getQuotes(query)
     }
